@@ -1,2 +1,2 @@
 # About
-Writings
+Articles, book summaries or whatever
