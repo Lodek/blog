@@ -107,7 +107,7 @@ Without tests, the chaotic nature of software growth will spiral out of control.
 Thus tests act as a safety net for developers to change things, hopefully improve the legated code base while keeping the current set of features working.
 By enabling developers to work and modify the code base, tests provide the sustainable growth of the software project, hence being of value to the developers because it acts as an indicator that nothing is broken and to the company because it minimizes bugs found by clients, which can damage their reputation.
 
-# Unit testing principles
+## Unit testing principles
 
 The purpose of unit tests is to enable the sustainable growth of a project but not every test suite does that.
 A unit test is only valuable if it contributes to this goal.
@@ -116,7 +116,7 @@ How to write tests that contribute, rather than hinder, the goal of sustainabili
 That's what 3/4 of the book talks about, it'd be impossible to give a comprehensive answer to that question.
 With that said, the author introduces some concepts which can be used as a North to structuring and classifying tests.
 
-## Unit testing characteristics
+### Unit testing characteristics
 To write a unit test first it's important to understand what makes up a unit test.
 This definition is a common source of misunderstandings and arguments.
 TLDR: Unit tests are automated tests; they verifiy a small piece of code; they run quickly; they run in an isolated manner.
@@ -146,7 +146,7 @@ My one recommendation (and the book's) is to favor the classical approach when p
 There are significant benefits to be gained, all of which the author elegantly presents in the book.
 
 
-## The AAA pattern
+### The AAA pattern
 
 Most unit tests follow a structure with 3 sections: Arrange, Act and Assert.
 
@@ -160,15 +160,15 @@ That's important because according to the definition of unit tests, each test ve
 As general guideline, a public method in the SUT should be produce an output that matches a behavior, if multiple calls are required in the Act section it is a strong indication that the SUT has a leaky interface, which is to say, it is exposing implementation details to the calling code.
 Having said that, remember that there is no silver bullet in engineering, evaluate each situation accordingly.
 
-## Pillars of good tests
+### Pillars of good tests
 
 Having established the whys and the whats we get to the how.
 How to write a test that adds value.
 The best starting point is through what the author calls the pillar of unit tests.
 > 1 - Protection against regression
-2 - Resistance to refactoring
-3 - Fast feedback
-4 - Maintainabilty
+> 2 - Resistance to refactoring
+> 3 - Fast feedback
+> 4 - Maintainabilty
 
 - Not all test are equal
 - Test things that are valuable
