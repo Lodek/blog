@@ -1,4 +1,7 @@
 # A review for Unit Testing Principles, Practices and Patterns @2021-08-15
+TLDR: Review and summary of the book "Unit Testing Principles, Practices and Patterns" by Vladimir Khorikov.
+The intent is to summarize what I considered some important take aways from the book.
+
 Reference: 
 ```yaml
 title: Unit Testing Principles, Practices, and Patterns
@@ -14,18 +17,10 @@ isbn: "9781617296277"
 
 1. Book abstract
 2. Why I read this book and my background with testing (optional)
-3. TBD
-
-Book metadata:
-
-```yaml
-title: Unit Testing Principles, Practices, and Patterns
-authors:
-  - Vladimir Khorikov
-publisher: Manning Publications
-year: 2020
-isbn: "9781617296277"
-```
+3. Why test
+4. Unit test principles
+5. Integration tests practices
+6. Patterns
 
 ## Book abstract
 The book "Unit Testing Principles, Practices and Patterns" takes a different approach to explaining tests and unit tests.
@@ -45,6 +40,7 @@ The author touches on several axis of enterprise applications such as: databases
 The end result is that the discussions are rich, full of context and tons of incredible information.
 
 ## Why I read this book and my background with testing
+
 NOTE: This section is optional, skip it to save time.
 
 My initial contact with Unit Testing was sometime in 2018, in the context of Python, through an excellent [talk](https://nedbatchelder.com/text/test0.html) by Ned Batcher.
@@ -88,3 +84,91 @@ More than anything else, this books has taught me to *think* about tests.
 The reality is that tests are important but they also have a cost.
 Writing tests for a project is about finding the balance of maximizing the chance of catching regressions and minimizing the ammount of maintanence the tests will need.
 Finding this sweet spot and deciding on what should and what shouldn't be tested explicitly is the key.
+
+## Why unit test
+
+The author starts off by justifying why applications should have unit tests.
+The key takeaway presented is: susteinable growth.
+
+Not too long ago companies were resistent to software testing.
+It was seen as something that lengthened the development process and was bad for business.
+As most tech companies have learnt, there's more to it than that.
+
+Although testing may delay the initial delivery of results, as software grows, its main developers have moved on to different projects and jobs, the code base is no longer fully understood by the team and that leads to problems.
+
+Testing provides a safety net for developers to refactor and add features with a minimum guarantee that they have not broken anything.
+No code base is perfect and some coupling will exist, changes will cause unexpected side effects in the production code and that's how regressions are born.
+
+A good set of tests delivered alongside the main feature enables a software project to grow by minimizing the chaos.
+
+The author arguees that as code is added and different developers work on the code base, the code base entropy increases.
+Increased entropy leads to a more complicated code base which increases the odds of regressions.
+Without tests, the chaotic nature of software growth will spiral out of control.
+Thus tests act as a safety net for developers to change things, hopefully improve the legated code base while keeping the current set of features working.
+By enabling developers to work and modify the code base, tests provide the sustainable growth of the software project, hence being of value to the developers because it acts as an indicator that nothing is broken and to the company because it minimizes bugs found by clients, which can damage their reputation.
+
+# Unit testing principles
+
+The purpose of unit tests is to enable the sustainable growth of a project but not every test suite does that.
+A unit test is only valuable if it contributes to this goal.
+Some tests are nothing more than a maintanence burden, with no real value in the code base while others are critical in catching regressions.
+How to write tests that contribute, rather than hinder, the goal of sustainability?
+That's what 3/4 of the book talks about, it'd be impossible to give a comprehensive answer to that question.
+With that said, the author introduces some concepts which can be used as a North to structuring and classifying tests.
+
+## Unit testing characteristics
+To write a unit test first it's important to understand what makes up a unit test.
+This definition is a common source of misunderstandings and arguments.
+TLDR: Unit tests are automated tests; they verifiy a small piece of code; they run quickly; they run in an isolated manner.
+
+There are two schools of thought to unit tests, as the author explain, the "London approach" and the "Classical approach".
+
+In the London approach "running in an isolated manner" means that a Unit test tests a class and only that class.
+Any and all dependencies of the testee must be mocked out.
+Isolation is done at a class level.
+
+The Classical approach understand that "isolation" refers to tests, not classes.
+A *test* should be run in an isolated manner, which is to say, a test should have no side effect which allows for parallel execution.
+What that entails is that only out-of-process dependencies are mocked out.
+If the application being tested modifies an external service, during a test this interaction should be mocked as to not produce side effects, which may introduce flaky tests or race conditions.
+In the case of an application database, one may use transactions / atomic operations around each test case, the author goes in depth about the subject in later parts of the book.
+
+The book favors the classical approach and gives arguments as to why it's a best take in the long run.
+The main points are that unit tests should test a unit of application behavior not code.
+The London approach makes it impossible to do so because non-trivial systems requires multiple classes to implement a business behavior, by mocking out the classes involved in the execution path of this behavior, the test isn't truly testing the behavior, only the interactions with the collaborators.
+
+Again, this is a complex topic and although I strongly agree with the author in that the Classical approach does produce better tests and it is less burdersome, each scenario is different.
+If may very well be that the codebase is a complete mess of spaghetti code that a method's scope is not even well defined.
+Another scenario would be a poorly architectured application where unexpected classes call out of process dependencies, violating the "isolation" attribute.
+
+There isn't a one-size-fits all here, it's the job of the developers and engineers to evaluate each scenario and see what makes sense.
+My one recommendation (and the book's) is to favor the classical approach when possible.
+There are significant benefits to be gained, all of which the author elegantly presents in the book.
+
+
+## The AAA pattern
+
+Most unit tests follow a structure with 3 sections: Arrange, Act and Assert.
+
+In the Arrange section the unit test sets up mock, test data, value object or whatever is needed for the Act phase.
+In the Act phase, the unit test uses the data setup in the Arrange phase and performs and action, usually by calling a method on the System under test (SUT).
+The SUT usually produces and output or changes some state, it modifies the system somehow, in the Arrange section the unit test verifies that the SUT's output produced the desired effect (be it a state transition or a method output).
+
+The AAA pattern defines a few guidelines of dos and don'ts.
+The author explores the pattern in depth but I believe the main take away here is this: there should only be one action in the Act section.
+That's important because according to the definition of unit tests, each test verifies an unit of behavior.
+As general guideline, a public method in the SUT should be produce an output that matches a behavior, if multiple calls are required in the Act section it is a strong indication that the SUT has a leaky interface, which is to say, it is exposing implementation details to the calling code.
+Having said that, remember that there is no silver bullet in engineering, evaluate each situation accordingly.
+
+## Pillars of good tests
+
+Having established the whys and the whats we get to the how.
+How to write a test that adds value.
+The best starting point is through what the author calls the pillar of unit tests.
+> 1 - Protection against regression
+2 - Resistance to refactoring
+3 - Fast feedback
+4 - Maintainabilty
+
+- Not all test are equal
+- Test things that are valuable
