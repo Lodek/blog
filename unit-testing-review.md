@@ -162,13 +162,61 @@ Having said that, remember that there is no silver bullet in engineering, evalua
 
 ### Pillars of good tests
 
-Having established the whys and the whats we get to the how.
-How to write a test that adds value.
-The best starting point is through what the author calls the pillar of unit tests.
-> 1 - Protection against regression
-> 2 - Resistance to refactoring
-> 3 - Fast feedback
-> 4 - Maintainabilty
+Having established the whys and the whats we get to the how of unit tests.
+How to write tests that add value.
 
-- Not all test are equal
-- Test things that are valuable
+The author introduces 4 pillars to unit tests:
+
+> 1 - Protection against regression<br>
+  2 - Resistance to refactoring<br>
+  3 - Fast feedback<br>
+  4 - Maintainabilty
+
+These four pillars lay the foundation through which one can think about tests, and indeed, that's how the author approaches the matter.
+Throughout the book, the author revisits these pillars again and again to justify why an approach is more favorable than the other.
+An example of that is the resistance to refactoring trait.
+One of the reasons the London approach is seen as problematic is because it is weak to refactoring.
+
+Protection against regression measures how well a test is able to catch a regression, that is, a bug that is created after a code change.
+A test is valuable if it is able to identify bugs.
+Identifying bugs early on is the very reason why tests enable a sustainable growth of the project.
+Hence, it follows that if a test does not do a good job at catching regressions, it's not doing its job.
+
+Resistance to refactoring relates to whether the test code requires refactoring after the production code is refactored.
+The test suite is an extremely important part of the code base.
+With that said, test code *is* code, which mean it requires human hours to maintain.
+If the testing code breaks and requires fixing up after each code refactoring, the test may become a burden to the development team.
+Ideally tests can withstand a minimum ammount of code refactoring without requiring intervention.
+Care is required so the test suite doesn't become a technical burden which hinders the desired objective of susteinable growth.
+
+Fast feedback relates to how quickly and often the tests can be run.
+A quick feedback loop is essential to guarantee that development can be carried out effectively.
+Fast running tests mean that local development can be carried out and its correctness can be continously verified by checking whether the tests are passing.
+
+Maintainability relates to the costs of maintaining the test suite.
+Reiterating, the test code is still code and depending the size of the project, it may be a significant part of the code base.
+If the tests are long, complex or hard to understand, the cost of maintanence goes up.
+Likewise, if the tests aren't unit tests at all and communicate with external dependencies, that introduces additional burdens related to configuring the environment and ensuring its consistency.
+In general, as tests more closely simulate the end user's behavior (integration, end to end) the better it is at catching regression but the harder it is to maintain.
+
+One can start using these four pillars to see where a test fits and whether it is worth maintaining.
+A valuable takeway from these concepts is to note that not all tests are equal.
+Some tests are valuable and others aren't.
+Writing tests to cover every single function or method in the production code is unsustainable and wasteful.
+Careful consideration should be put on which behaviors will be tested, which won't and whether the tests will protect the application from future changes.
+
+What should be tested is a tricky subject with lots of particularities.
+The book explores various axes regarding this issue.
+A good guideline is to test behaviors and not any behavior, *observable* behaviors.
+An observable behavior can be thought of an action performed by the system that changes the external world.
+Examples are: data returned to the user, an email sent, a message passed onto a bus and so on.
+With that said, testing infrastructure code isn't always valuable, the main focus should go on domain logic / algorithms and controllers.
+
+In short, domain logic relates to code that encapsulate business logic (the author often mentions concepts related to domain driven design but even if an application doesn't apply DDD the idea can still be used).
+Algorithms may or may not be related to the domain model, some algorithms are complex (and important) in their own right to require thorough testing.
+Controllers can be thought of any code that orchestrate calls.
+As a guideline the book recommends separating the code intro controllers and algorithms / domain model, which eases testing and creates a clearer boundary between the application and the business logic.
+
+From a testing perspective, this practice enables domains and algorithms to follow a (mostly) black-box approach to testing algorithms and domain models, in which the code generates a values / domain events as outputs, which are easy to test.
+Controllers are then test the entire application call stack, asserting that the code is invoking the correct collaborators.
+Note that in this model controllers, and ideally only them, will make calls to external dependencies (apis, message bus, etc), which means that controller tests will use some sort of test double to remove these dependencies.
